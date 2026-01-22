@@ -43,15 +43,15 @@ async function receiveWebhook(req, res) {
           console.log(`\n[MENSAJE] De ${name} (${from}): ${message.text?.body || ""}`);
 
           const bodyText =
-            "Bienvenido al sistema de agendamiento, por favor completa el siguiente formulario para agendar tu recepción o despacho";
+            "Bienvenido al sistema de agendamiento, por favor completa el siguiente formulario para agendar tu recepción o despacho Información que necesitarás:\n- Fecha y hora de llegada\n- Tipo y cantidades de camiones\n- Información de bins\n- Variedad de fruta";
           const footerText =
-            "Información que necesitarás:\n- Fecha y hora de llegada\n- Tipo y cantidades de camiones\n- Información de bins\n- Variedad de fruta";
+            "Todos los datos son necesarios para agendar tu recepción o despacho";
 
           sendInteractiveButtons({
             to: from,
             bodyText,
             footerText,
-            imageLink: "https://via.placeholder.com/800x600?text=Agendamiento",
+            imageLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8V1W1dbt4dK9TadXuQDEMix3NwUeBLy0jww&s",
             button1: { id: "comenzar", title: "Comenzar" },
             button2: { id: "hablar_asesor", title: "Hablar con un asesor" }
           })
