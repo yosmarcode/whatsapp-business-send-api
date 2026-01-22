@@ -1,5 +1,9 @@
 const { env } = require("../config/env");
-const { sendInteractiveButtons } = require("../services/whatsapp.service");
+const {
+  sendInteractiveButtons,
+  sendFlow,
+  sendTextMessage
+} = require("../services/whatsapp.service");
 
 function verifyWebhook(req, res) {
   const mode = req.query["hub.mode"];
@@ -45,14 +49,14 @@ async function receiveWebhook(req, res) {
           const bodyText =
             "Bienvenido al sistema de agendamiento.\n\nPara continuar, completa el siguiente formulario para agendar tu recepción o despacho.\n\nInformación que necesitarás:\n- Fecha y hora de llegada\n- Tipo y cantidades de camiones\n- Información de bins\n- Variedad de fruta";
           const footerText =
-            "Ten a mano la información antes de continuar";
+            "Todos campos son necesarios";
 
           sendInteractiveButtons({
             to: from,
             bodyText,
             footerText,
             imageLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8V1W1dbt4dK9TadXuQDEMix3NwUeBLy0jww&s",
-            button1: { id: "comenzar", title: "Comenzar" },
+            button1: { id: "comenzar", title: "Comenzar Agendamiento" },
             button2: { id: "hablar_asesor", title: "Hablar con un asesor" }
           })
             .then((result) => {
@@ -64,6 +68,37 @@ async function receiveWebhook(req, res) {
         } else if (message.type === "interactive" && message.interactive?.type === "button_reply") {
           const buttonId = message.interactive?.button_reply?.id;
           console.log(`\n[INTERACTIVE] Button reply de ${name} (${from}): ${buttonId}`);
+
+          if (buttonId === "comenzar") {
+            if (!env.WHATSAPP_DEFAULT_FLOW_ID) {
+              sendTextMessage({
+                to: from,
+                text: "El formulario aún no está configurado. Intenta nuevamente más tarde."
+              }).catch((err) => {
+                console.error("Error enviando fallback text:", err?.response?.data || err);
+              });
+            } else {
+              sendFlow({
+                to: from,
+                flowId: env.WHATSAPP_DEFAULT_FLOW_ID,
+                flowCta: env.WHATSAPP_DEFAULT_FLOW_CTA,
+                screen: env.WHATSAPP_DEFAULT_FLOW_SCREEN
+              })
+                .then((result) => {
+                  console.log("[FLOW-SEND] Flow enviado:", result);
+                })
+                .catch((err) => {
+                  console.error("Error enviando Flow:", err?.response?.data || err);
+
+                  sendTextMessage({
+                    to: from,
+                    text: "No pude iniciar el formulario en este momento. Intenta nuevamente más tarde."
+                  }).catch((err2) => {
+                    console.error("Error enviando fallback text:", err2?.response?.data || err2);
+                  });
+                });
+            }
+          }
         } else {
           console.log(`\n[EVENTO] Tipo: ${message.type} de ${from}`);
         }
