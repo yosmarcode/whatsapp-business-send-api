@@ -1,4 +1,8 @@
-const { sendInteractiveButtons2, sendInteractiveButtons } = require("../services/whatsapp.service");
+const {
+  sendInteractiveButtons2,
+  sendInteractiveButtons,
+  sendTextMessage
+} = require("../services/whatsapp.service");
 
 async function sendMessageEndpoint2Controller(req, res) {
   try {
@@ -81,4 +85,35 @@ async function sendMessageEndpointInteractiveController(
   }
 }
 
-module.exports = { sendMessageEndpoint2Controller, sendMessageEndpointInteractiveController };
+async function sendTextEndpoint(req, res) {
+  try {
+    const { to, text } = req.body || {};
+
+    if (!to || typeof to !== "string") {
+      return res.status(400).json({ error: "Missing 'to'" });
+    }
+    if (!text || typeof text !== "string") {
+      return res.status(400).json({ error: "Missing 'text'" });
+    }
+
+    const result = await sendTextMessage({ to, text });
+    return res.status(200).json({ ok: true, result });
+  } catch (err) {
+    const status = err?.response?.status || 500;
+    const data = err?.response?.data;
+
+    console.error("Error sending text:", data || err);
+
+    return res.status(status).json({
+      ok: false,
+      error: "Failed to send text",
+      details: data || err?.message || String(err)
+    });
+  }
+}
+
+module.exports = {
+  sendMessageEndpoint2Controller,
+  sendMessageEndpointInteractiveController,
+  sendTextEndpoint
+};

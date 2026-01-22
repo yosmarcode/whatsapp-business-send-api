@@ -62,6 +62,19 @@ async function sendFlow({ to, flowId, flowCta, screen = "START", flowToken }) {
   return sendWhatsAppMessage(payload);
 }
 
+async function sendTextMessage({ to, text }) {
+  const payload = {
+    messaging_product: "whatsapp",
+    to,
+    type: "text",
+    text: {
+      body: text
+    }
+  };
+
+  return sendWhatsAppMessage(payload);
+}
+
 async function sendInteractiveButtons2(payload) {
   return sendWhatsAppMessage(payload);
 }
@@ -112,6 +125,7 @@ module.exports = {
   sendFlow,
   sendInteractiveButtons,
   sendInteractiveButtons2,
+  sendTextMessage,
   sendWhatsAppMessage,
   generateFlowToken
 };
