@@ -56,7 +56,7 @@ async function receiveWebhook(req, res) {
             bodyText,
             footerText,
             imageLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8V1W1dbt4dK9TadXuQDEMix3NwUeBLy0jww&s",
-            button1: { id: "comenzar", title: "Comenzar Agendamiento" },
+            button1: { id: "comenzar", title: "Comenzar" },
             button2: { id: "hablar_asesor", title: "Hablar con un asesor" }
           })
             .then((result) => {
