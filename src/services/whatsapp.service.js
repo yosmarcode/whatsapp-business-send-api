@@ -87,6 +87,9 @@ async function sendInteractiveButtons({
   button2,
   imageLink
 }) {
+  const resolvedFooterText =
+    typeof footerText === "string" && footerText.length > 60 ? footerText.slice(0, 60) : footerText;
+
   const payload = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
@@ -101,7 +104,7 @@ async function sendInteractiveButtons({
           }
         : undefined,
       body: { text: bodyText },
-      footer: footerText ? { text: footerText } : undefined,
+      footer: resolvedFooterText ? { text: resolvedFooterText } : undefined,
       action: {
         buttons: [
           { type: "reply", reply: { id: button1.id, title: button1.title } },

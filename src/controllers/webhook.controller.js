@@ -43,9 +43,9 @@ async function receiveWebhook(req, res) {
           console.log(`\n[MENSAJE] De ${name} (${from}): ${message.text?.body || ""}`);
 
           const bodyText =
-            "Bienvenido al sistema de agendamiento, por favor completa el siguiente formulario para agendar tu recepción o despacho Información que necesitarás:\n- Fecha y hora de llegada\n- Tipo y cantidades de camiones\n- Información de bins\n- Variedad de fruta";
+            "Bienvenido al sistema de agendamiento.\n\nPara continuar, completa el siguiente formulario para agendar tu recepción o despacho.\n\nInformación que necesitarás:\n- Fecha y hora de llegada\n- Tipo y cantidades de camiones\n- Información de bins\n- Variedad de fruta";
           const footerText =
-            "Todos los datos son necesarios para agendar tu recepción o despacho";
+            "Ten a mano la información antes de continuar";
 
           sendInteractiveButtons({
             to: from,
